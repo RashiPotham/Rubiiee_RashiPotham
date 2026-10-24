@@ -1,0 +1,16 @@
+import { useMemo, useState } from "react";
+import { Search, CalendarDays, MapPin, ArrowRight, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+import { events } from "../data/events.js";
+import EventCard from "../components/EventCard.jsx";
+export default function Discover() {
+ const [query,setQuery]=useState(""); const [category,setCategory]=useState("All"); const [price,setPrice]=useState("All");
+ const categories=["All",...new Set(events.map(e=>e.category))];
+ const filtered=useMemo(()=>events.filter(e=>(category==="All"||e.category===category)&&(price==="All"||(price==="Free"&&e.price==="Free")||(price==="Paid"&&e.price!=="Free"))&&`${e.title} ${e.description} ${e.area} ${e.organizer}`.toLowerCase().includes(query.toLowerCase())),[query,category,price]);
+ return <div className="page-shell"><section className="search-row"><label className="search-box"><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search events, clubs, or organizers"/></label><Link className="button secondary" to="/calendar"><CalendarDays size={17}/> Open calendar</Link></section>
+ <section className="hero"><div className="hero-copy"><span className="eyebrow"><Sparkles size={14}/> FEATURED THIS WEEK</span><h1>Find your people.<br/><span>Make memorable plans.</span></h1><p>Discover workshops, meetups, and communities building what's next in Mumbai.</p><div className="hero-actions"><Link className="button primary" to="/calendar">Explore calendar <ArrowRight size={17}/></Link><Link className="button ghost" to="/host">Host an event</Link></div><div className="hero-foot"><span><CalendarDays size={16}/> 12–16 May 2026</span><span><MapPin size={16}/> Mumbai, India</span></div></div><div className="hero-art"><div className="art-orbit orbit-one"/><div className="art-orbit orbit-two"/><div className="art-spark"><Sparkles size={70}/></div><div className="floating-note note-one">AI & Product</div><div className="floating-note note-two">Community first</div><div className="art-caption">Your next great idea starts with a room full of people.</div></div></section>
+ <section className="section-heading"><div><span className="eyebrow purple">YOUR DISCOVER FEED</span><h2>Events worth stepping out for</h2><p>Explore the schedule and find a session that fits your day.</p></div><span className="result-count">{filtered.length} events</span></section>
+ <div className="filters"><div className="chip-group">{categories.map(c=><button key={c} className={`chip ${category===c?"active":""}`} onClick={()=>setCategory(c)}>{c}</button>)}</div><div className="chip-group">{["All","Free","Paid"].map(p=><button key={p} className={`chip ${price===p?"active":""}`} onClick={()=>setPrice(p)}>{p}</button>)}</div></div>
+ <section className="event-grid">{filtered.map(e=><EventCard key={e.id} event={e}/>)}</section>{filtered.length===0&&<div className="empty-state">No events match those filters. Try another search.</div>}
+ <section className="host-cta"><div><span className="eyebrow">FOR ORGANIZERS</span><h2>Bring your community together.</h2><p>Create an organizer profile and start planning events for your people.</p></div><Link className="button primary" to="/host">Create a committee <ArrowRight size={17}/></Link></section></div>;
+}

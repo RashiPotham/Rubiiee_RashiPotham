@@ -1,0 +1,7 @@
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Sparkles, UserRound, Ticket, Settings, SlidersHorizontal, LogOut, PlusCircle } from "lucide-react";
+import { useAuth } from "../context/AuthContext.jsx";
+export default function Layout({ children }) {
+  const { user, signOut } = useAuth(); const navigate = useNavigate();
+  return <><header className="topbar"><Link className="brand" to="/"><span className="brand-icon"><Sparkles size={21}/></span>WorldOfEvents</Link><nav className="topnav"><Link to="/">Explore events</Link><Link className="pill" to="/calendar">Calendar</Link><Link className="pill" to="/host">Create committee</Link>{user ? <div className="user-menu"><span className="avatar">{user.name?.slice(0,2).toUpperCase()}</span><span>{user.name}</span><button className="text-button" onClick={() => {signOut(); navigate("/");}}>Sign out</button></div> : <Link className="pill" to="/signin">Sign in</Link>}</nav></header><main>{children}</main><footer className="footer"><div><Link className="brand" to="/"><span className="brand-icon"><Sparkles size={18}/></span>WorldOfEvents</Link><p>Discover events, clubs, and organizers that match your interests.</p></div><div className="footer-links"><Link to="/calendar">Event calendar</Link><Link to="/host">Host an event</Link><Link to="/signin">Account</Link></div><small>© 2026 WorldOfEvents. Demo project.</small></footer></>;
+}

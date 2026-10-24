@@ -1,0 +1,5 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { api } from "../api.js";
+import { events, formatDate } from "../data/events.js";
+export default function Bookings(){const [bookings,setBookings]=useState([]),[error,setError]=useState("");useEffect(()=>{api("/bookings").then(d=>setBookings(d.bookings)).catch(e=>setError(e.message));},[]);return <div className="page-shell"><div className="page-title"><span className="eyebrow purple">YOUR PLANS</span><h1>My bookings</h1><p>Your registered events, all in one place.</p></div>{error?<div className="empty-state">{error} <Link to="/signin">Sign in</Link></div>:<div className="event-grid">{bookings.map(b=>{const event=events.find(e=>e.id===b.eventId);return event&&<article className="event-card" key={b.id}><span className="tag">Confirmed</span><h3>{event.title}</h3><p>{formatDate(event.date)} · {event.start}–{event.end}</p><p>{event.area}</p><Link className="inline-link" to={`/events/${event.id}`}>View event →</Link></article>;})}{!bookings.length&&<div className="empty-state">No bookings yet. <Link to="/">Discover events</Link></div>}</div>}</div>}
